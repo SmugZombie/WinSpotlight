@@ -3,19 +3,27 @@
 		"name": "notepad",
 		"path": "C:\\Windows\\system32\\notepad.exe"
 	},{
-		"name": "notepad++path ",
+		"name": "notepad++",
 		"path": "C:\\Windows\\system32\\notepad.exe"
 	}, {
 		"name": "sublime3",
 		"path": "C:\\Program Files\\Sublime Text 3\\sublime_text.exe"
 	}, {
-		"name": "taskmanager ",
+		"name": "taskmanager",
 		"path": "C:\\Windows\\system32\\taskmgr.exe"
 	}, {
 		"name": "cygwin",
 		"path": "Test2"
 	}, {
+		"name": "chrome",
+		"path": "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+	}, {
 		"name": "google chrome",
-		"path": "Test2"
-	}]
+		"path": "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+	}],
+	"config": [{
+			"enableGoogle": true,
+			"enableWindows": false,
+			"enableDig": true
+		}]
 }
