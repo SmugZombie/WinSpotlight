@@ -2,7 +2,7 @@
 # spotlight.py
 # WIP
 # Ron Egli - github.com/smugzombie
-# Version 0.0.1
+# Version 0.0.2
 
 import commands
 import json
@@ -16,7 +16,7 @@ arguments.add_argument('--query','-q', help="Query", required=True)
 args = arguments.parse_args()
 action = args.action
 query = args.query
-configfile="config.json"
+configfile="apps.json"
 output = ""
 
 with open(configfile) as data_file:
