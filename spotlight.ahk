@@ -1,16 +1,26 @@
 #SingleInstance, force
-#Include, Includes/runcommand.ahk
+#Include, Includes\runcommand.ahk
 ; Spotlight for Windows
 ; WIP
 ; Ron Egli - github.com/smugzombie
-; Version 0.0.3
 
+app_title = WinSpotlight
+app_version = 0.0.4
+menu_icon := A_ScriptDir "\Includes\icon.ico"
 ibc_gui_background_color = 66CCFF
 ibc_input_gui_number = 45
 ibc_completion_gui_number := ibc_input_gui_number + 1
 ibc_input_check_delay = 100
 ibc_completion_file := A_Temp . "\ibc_completions"
 ibc_validation_file := A_Temp . "\ibc_validation"
+
+Menu, Tray, Tip, %app_title% - %app_version%
+Menu, Tray, Icon,,,1
+Menu, Tray, Icon, %menu_icon%,1,1
+Menu, Tray, NoStandard
+Menu, Tray, Add, R&eload, ReloadHandler
+Menu, Tray, Add,
+Menu, Tray, Add, E&xit, ExitHandler
 
 Gui %ibc_input_gui_number%: +Owner -Caption +AlwaysOnTop 
 Gui %ibc_input_gui_number%: font, s20
@@ -224,3 +234,11 @@ ibc_copy_completion_to_input:
     }
   }
   return
+
+ExitHandler:
+ExitApp 
+return
+
+ReloadHandler:
+Reload 
+return
