@@ -2,7 +2,7 @@
 # spotlight.py
 # WIP
 # Ron Egli - github.com/smugzombie
-# Version 0.0.2
+# Version 0.0.3
 
 import commands
 import json
@@ -24,6 +24,11 @@ with open(configfile) as data_file:
 
 appcount = len(json["apps"])
 apps = json['apps']
+
+googleEnabled = json["config"][0]["enableGoogle"]
+windowsEnabled = json['config'][0]['enableWindows']
+digEnabled = json['config'][0]['enableDig']
+
 foundcount = 0
 
 if action == "search":
@@ -34,12 +39,14 @@ if action == "search":
 					foundcount += 1
 		if output == "":
 				output = ",No Results Found for: "+query;
-				output += ",Google: "+query;
-				output += ",Windows: "+query;
+				if googleEnabled: output += ",Google: "+query;
+				if windowsEnabled: output += ",Windows: "+query;
+				if digEnabled: output += ",DigDNS: "+query;
 		else:
 				output += ","+str(foundcount)+" Result(s) Found for: "+query;
-				output += ",Google: "+query;
-				output += ",Windows: "+query;
+				if googleEnabled: output += ",Google: "+query;
+				if windowsEnabled: output += ",Windows: "+query;
+				if digEnabled: output += ",DigDNS: "+query;
 		sys.stdout.write(output)
 
 if action == "launch":
