@@ -13,7 +13,7 @@
 		"path": "C:\\Windows\\system32\\taskmgr.exe"
 	}, {
 		"name": "cygwin",
-		"path": "Test2"
+		"path": "C:\\Windows\\system32\\cygwin"
 	}, {
 		"name": "chrome",
 		"path": "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
