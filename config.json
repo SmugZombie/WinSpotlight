@@ -1,0 +1,21 @@
+{
+	"apps": [{
+		"name": "notepad",
+		"path": "C:\\Windows\\system32\\notepad.exe"
+	},{
+		"name": "notepad++path ",
+		"path": "C:\\Windows\\system32\\notepad.exe"
+	}, {
+		"name": "sublime3",
+		"path": "C:\\Program Files\\Sublime Text 3\\sublime_text.exe"
+	}, {
+		"name": "taskmanager ",
+		"path": "C:\\Windows\\system32\\taskmgr.exe"
+	}, {
+		"name": "cygwin",
+		"path": "Test2"
+	}, {
+		"name": "google chrome",
+		"path": "Test2"
+	}]
+}
