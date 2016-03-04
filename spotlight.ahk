@@ -5,7 +5,7 @@
 ; Ron Egli - github.com/smugzombie
 
 app_title = WinSpotlight
-app_version = 0.0.5
+app_version = 0.0.6
 menu_icon := A_ScriptDir "\Includes\icon.ico"
 ibc_gui_background_color = 66CCFF
 ibc_input_gui_number = 45
@@ -178,6 +178,15 @@ validate_input:
 		send {lwin up}
 		sleep 300
     	SendRaw, %query%
+    	gosub disable_hotkeys
+    	return
+	}
+
+	IfInString, ibc_input, DigDNS:
+	{
+		replace := "DigDNS: "
+		StringReplace, query, ibc_input, %replace%, ,
+    	Run http://digdns.com/?query=%query% 
     	gosub disable_hotkeys
     	return
 	}
