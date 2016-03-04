@@ -5,7 +5,7 @@
 ; Ron Egli - github.com/smugzombie
 
 app_title = WinSpotlight
-app_version = 0.0.4
+app_version = 0.0.5
 menu_icon := A_ScriptDir "\Includes\icon.ico"
 ibc_gui_background_color = 66CCFF
 ibc_input_gui_number = 45
@@ -140,7 +140,6 @@ hide_guis:
 	Gui %ibc_completion_gui_number%: Hide
 	return
 
-
 ibc_submit:
   GuiControlGet ibc_input, %ibc_input_gui_number%:, Input
   ;gosub cleanup
@@ -153,6 +152,11 @@ validate_input:
 	if (ibc_input == "reload")
 	{
 		Reload
+	}
+
+	if (ibc_input == "exit")
+	{
+		gosub ExitHandler
 	}
 
 	IfInString, ibc_input, Google:
@@ -185,10 +189,6 @@ validate_input:
 			Run %validation%
   			gosub disable_hotkeys
 		}
-	Else
-		{
-			; Do Nothing
-		}
 	return
 
 ibc_next_completion:
@@ -199,7 +199,6 @@ ibc_next_completion:
   GuiControl %ibc_completion_gui_number%:Choose ,Completions, %ibc_current_completion%
   gosub ibc_copy_completion_to_input
   return
-  
   
 ibc_previous_completion:
   GuiControlGet ibc_current_completion, %ibc_completion_gui_number%:, Completions
