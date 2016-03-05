@@ -5,14 +5,14 @@
 ; Ron Egli - github.com/smugzombie
 
 app_title = WinSpotlight
-app_version = 0.0.6
+app_version = 0.0.7
 menu_icon := A_ScriptDir "\Includes\icon.ico"
-ibc_gui_background_color = 66CCFF
-ibc_input_gui_number = 45
-ibc_completion_gui_number := ibc_input_gui_number + 1
-ibc_input_check_delay = 100
-ibc_completion_file := A_Temp . "\ibc_completions"
-ibc_validation_file := A_Temp . "\ibc_validation"
+spot_gui_background_color = 66CCFF
+spot_input_gui_number = 45
+spot_completion_gui_number := spot_input_gui_number + 1
+spot_input_check_delay = 50
+spot_completion_file := A_Temp . "\spot_completions"
+spot_validation_file := A_Temp . "\spot_validation"
 
 Menu, Tray, Tip, %app_title% - %app_version%
 Menu, Tray, Icon,,,1
@@ -22,79 +22,79 @@ Menu, Tray, Add, R&eload, ReloadHandler
 Menu, Tray, Add,
 Menu, Tray, Add, E&xit, ExitHandler
 
-Gui %ibc_input_gui_number%: +Owner -Caption +AlwaysOnTop 
-Gui %ibc_input_gui_number%: font, s20
-Gui %ibc_input_gui_number%: Add, Edit, w500 vInput gibc_input_changed
-Gui %ibc_input_gui_number%: Color, % ibc_gui_background_color
-Gui %ibc_input_gui_number%: +LastFound
+Gui %spot_input_gui_number%: +Owner -Caption +AlwaysOnTop 
+Gui %spot_input_gui_number%: font, s20
+Gui %spot_input_gui_number%: Add, Edit, w500 vInput gspot_input_changed
+Gui %spot_input_gui_number%: Color, % spot_gui_background_color
+Gui %spot_input_gui_number%: +LastFound
 
-ibc_input_gui_id := winexist()
+spot_input_gui_id := winexist()
 
-Gui %ibc_completion_gui_number%: +Owner -Caption +AlwaysOnTop 
-Gui %ibc_completion_gui_number%: font, s14
-Gui %ibc_completion_gui_number%: Add, Listbox, x0 y0 w600 r10 vCompletions AltSubmit HwndIbc_Listbox
-Gui %ibc_completion_gui_number%: Color, EEAA99
-Gui %ibc_completion_gui_number%: +LastFound
+Gui %spot_completion_gui_number%: +Owner -Caption +AlwaysOnTop 
+Gui %spot_completion_gui_number%: font, s14
+Gui %spot_completion_gui_number%: Add, Listbox, x0 y0 w600 r10 vCompletions AltSubmit Hwndspot_Listbox
+Gui %spot_completion_gui_number%: Color, EEAA99
+Gui %spot_completion_gui_number%: +LastFound
 WinSet, TransColor, EEAA99
 return
 
 show_spotlight:
 	gosub enable_hotkeys
-	Gui %ibc_input_gui_number%: Show
-	WinGetPos ibc_input_gui_x, ibc_input_gui_y, w , ibc_input_gui_height, A
-	ibc_completion_gui_x := ibc_input_gui_x
-	ibc_completion_gui_y := ibc_input_gui_y + ibc_input_gui_height + 5
+	Gui %spot_input_gui_number%: Show
+	WinGetPos spot_input_gui_x, spot_input_gui_y, w , spot_input_gui_height, A
+	spot_completion_gui_x := spot_input_gui_x
+	spot_completion_gui_y := spot_input_gui_y + spot_input_gui_height + 5
 
 ^Space::
 gosub show_spotlight
 Return 
 
-ibc_input_changed:
-  GuiControlGet ibc_input, %ibc_input_gui_number%:, Input
-  SetTimer ibc_check_input, %ibc_input_check_delay%
+spot_input_changed:
+  GuiControlGet spot_input, %spot_input_gui_number%:, Input
+  SetTimer spot_check_input, %spot_input_check_delay%
   return
 
-ibc_check_input:
-  if (A_TimeIdlePhysical < ibc_input_check_delay)
+spot_check_input:
+  if (A_TimeIdlePhysical < spot_input_check_delay)
     return
 
-  SetTimer ibc_check_input, off
+  SetTimer spot_check_input, off
 
-  if (ibc_input == ibc_previous_input)
+  if (spot_input == spot_previous_input)
     return
   
-  ibc_previous_input := ibc_input
-  ibc_input_len := strlen(ibc_input)
+  spot_previous_input := spot_input
+  spot_input_len := strlen(spot_input)
   
-  if (ibc_input_len == 0)
+  if (spot_input_len == 0)
   {
-    gosub ibc_hide_completions
+    gosub spot_hide_completions
     return
   }
   
-  ibc_matches =
-	ibc_input = "%ibc_input%"  	
-  	ibc_completions := runcommand("python " A_ScriptDir "\spotlight.py --action search --query " ibc_input)
-  	FileAppend, %ibc_completions%`n, Test.txt
-
-  	Loop, Parse, ibc_completions, CSV 
+  spot_matches =
+	spot_input = "%spot_input%"  	
+  	spot_completions := runcommand("python " A_ScriptDir "\spotlight.py --action search --query " spot_input)
+  	FileAppend, %spot_completions%`n, Test.txt
+    ;gosub fetchOpenWindows
+  	Loop, Parse, spot_completions, CSV 
     {
       if (A_Index == 1)
-        ibc_user_input := A_Loopfield
+        spot_user_input := A_Loopfield
       Else
-        ibc_matches := ibc_matches . "|" . A_Loopfield
+        spot_matches := spot_matches . "|" . A_Loopfield
     } 
 
-   if (ibc_matches <> "|")
+   if (spot_matches <> "|")
   {
-    GuiControl %ibc_completion_gui_number%:,Completions, %ibc_matches%
-    Gui %ibc_completion_gui_number%: Show, x%ibc_completion_gui_x% y%ibc_completion_gui_y%
-    WinActivate ahk_id %ibc_input_gui_id%
+    GuiControl %spot_completion_gui_number%:,Completions, %spot_matches%
+    Gui %spot_completion_gui_number%: Show, x%spot_completion_gui_x% y%spot_completion_gui_y%
+    WinActivate ahk_id %spot_input_gui_id%
     hotkey down, on
     hotkey up, on
   }
   Else
-    gosub ibc_hide_completions   
+    gosub spot_hide_completions   
 
 	return
 
@@ -106,72 +106,72 @@ Deref_Umlauts( w, n=1 ) {
 
 copy_string_to_input(str) {
   global
-  GuiControl %ibc_input_gui_number%:, Input, %str%
-  ibc_input := str
-  ibc_previous_input := ibc_input
+  GuiControl %spot_input_gui_number%:, Input, %str%
+  spot_input := str
+  spot_previous_input := spot_input
   SendInput {end}
-  SetTimer ibc_check_input, off  
+  SetTimer spot_check_input, off  
 }
 
-ibc_hide_completions:
-  Gui %ibc_completion_gui_number%: Hide
+spot_hide_completions:
+  Gui %spot_completion_gui_number%: Hide
   Hotkey down, off
   Hotkey up, off
   return
 
 enable_hotkeys:
-	Hotkey enter, ibc_submit, on
-	Hotkey esc, ibc_cancel, on
-	Hotkey down, ibc_next_completion, off
-	Hotkey up, ibc_previous_completion, off
+	Hotkey enter, spot_submit, on
+	Hotkey esc, spot_cancel, on
+	Hotkey down, spot_next_completion, off
+	Hotkey up, spot_previous_completion, off
 	return
 
 disable_hotkeys:
-	GuiControl %ibc_input_gui_number%:, Input, %str%
-	Hotkey enter, ibc_submit, off
-	Hotkey esc, ibc_cancel, off
+	GuiControl %spot_input_gui_number%:, Input, %str%
+	Hotkey enter, spot_submit, off
+	Hotkey esc, spot_cancel, off
 	Hotkey down, off
 	Hotkey up, off
 	gosub hide_guis
 	return
 
 hide_guis:
-	Gui %ibc_input_gui_number%: Hide
-	Gui %ibc_completion_gui_number%: Hide
+	Gui %spot_input_gui_number%: Hide
+	Gui %spot_completion_gui_number%: Hide
 	return
 
-ibc_submit:
-  GuiControlGet ibc_input, %ibc_input_gui_number%:, Input
+spot_submit:
+  GuiControlGet spot_input, %spot_input_gui_number%:, Input
   ;gosub cleanup
   
   gosub validate_input
   return
 
 validate_input:
-	;StringReplace,ibc_input,ibc_input,`r`n,,A
-	if (ibc_input == "reload")
+	;StringReplace,spot_input,spot_input,`r`n,,A
+	if (spot_input == "reload")
 	{
 		Reload
 	}
 
-	if (ibc_input == "exit")
+	if (spot_input == "exit")
 	{
 		gosub ExitHandler
 	}
 
-	IfInString, ibc_input, Google:
+	IfInString, spot_input, Google:
 	{
 		replace := "Google: "
-		StringReplace, query, ibc_input, %replace%, ,
+		StringReplace, query, spot_input, %replace%, ,
     	Run https://www.google.com/search?q=%query% 
     	gosub disable_hotkeys
     	return
 	}
 
-	IfInString, ibc_input, Windows:
+	IfInString, spot_input, Windows:
 	{
 		replace := "Windows: "
-		StringReplace, query, ibc_input, %replace%, ,
+		StringReplace, query, spot_input, %replace%, ,
     	;Run https://www.google.com/search?q=%query% 
     	send {lwin down}
 		sleep 100
@@ -182,17 +182,17 @@ validate_input:
     	return
 	}
 
-	IfInString, ibc_input, DigDNS:
+	IfInString, spot_input, DigDNS:
 	{
 		replace := "DigDNS: "
-		StringReplace, query, ibc_input, %replace%, ,
+		StringReplace, query, spot_input, %replace%, ,
     	Run http://digdns.com/?query=%query% 
     	gosub disable_hotkeys
     	return
 	}
 
 	validation = ""
-	validation := runcommand("python " A_ScriptDir "\spotlight.py --action launch --query " ibc_input)
+	validation := runcommand("python " A_ScriptDir "\spotlight.py --action launch --query " spot_input)
 	if (validation != "")
 		{
 			Run %validation%
@@ -200,42 +200,42 @@ validate_input:
 		}
 	return
 
-ibc_next_completion:
-  GuiControlGet ibc_current_completion, %ibc_completion_gui_number%:, Completions
-  if (ibc_current_completion == "")
-    ibc_current_completion = 0
-  ibc_current_completion := ibc_current_completion + 1
-  GuiControl %ibc_completion_gui_number%:Choose ,Completions, %ibc_current_completion%
-  gosub ibc_copy_completion_to_input
+spot_next_completion:
+  GuiControlGet spot_current_completion, %spot_completion_gui_number%:, Completions
+  if (spot_current_completion == "")
+    spot_current_completion = 0
+  spot_current_completion := spot_current_completion + 1
+  GuiControl %spot_completion_gui_number%:Choose ,Completions, %spot_current_completion%
+  gosub spot_copy_completion_to_input
   return
   
-ibc_previous_completion:
-  GuiControlGet ibc_current_completion, %ibc_completion_gui_number%:, Completions
-  if (ibc_current_completion > 0)
+spot_previous_completion:
+  GuiControlGet spot_current_completion, %spot_completion_gui_number%:, Completions
+  if (spot_current_completion > 0)
   {
-    ibc_current_completion := ibc_current_completion - 1
-    if (ibc_current_completion == 0)
+    spot_current_completion := spot_current_completion - 1
+    if (spot_current_completion == 0)
     {
-      PostMessage, 0x186, -1, 0,, ahk_id %Ibc_Listbox%
-      copy_string_to_input(ibc_user_input)
+      PostMessage, 0x186, -1, 0,, ahk_id %spot_Listbox%
+      copy_string_to_input(spot_user_input)
     }
     else
     {
-      GuiControl %ibc_completion_gui_number%:Choose ,Completions, %ibc_current_completion%
-      Gosub ibc_copy_completion_to_input
+      GuiControl %spot_completion_gui_number%:Choose ,Completions, %spot_current_completion%
+      Gosub spot_copy_completion_to_input
     }
   }
   return
 
-ibc_cancel:
+spot_cancel:
   gosub disable_hotkeys
   return
 
-ibc_copy_completion_to_input:
-  ibc_wanted_completion := ibc_current_completion + 1
-  Loop, Parse, ibc_matches, |
+spot_copy_completion_to_input:
+  spot_wanted_completion := spot_current_completion + 1
+  Loop, Parse, spot_matches, |
   {
-    if (A_Index == ibc_wanted_completion)
+    if (A_Index == spot_wanted_completion)
     {
       copy_string_to_input(A_Loopfield)
       Break
@@ -248,5 +248,24 @@ ExitApp
 return
 
 ReloadHandler:
-Reload 
+reload 
+return
+
+fetchOpenWindows:
+additions =
+WinGet windows, List
+Loop %windows%
+{
+  id := windows%A_Index%
+  WinGetTitle wt, ahk_id %id%
+  if(wt != "")
+  {
+    IfInString, wt, %spot_input%
+    {
+      ;r .= ","wt
+      additions .= ","wt
+    }
+  }
+}
+spot_completions .= additions
 return
