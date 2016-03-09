@@ -5,7 +5,7 @@
 ; Ron Egli - github.com/smugzombie
 
 app_title = WinSpotlight
-app_version = 0.0.7
+app_version = 0.0.8
 menu_icon := A_ScriptDir "\Includes\icon.ico"
 spot_gui_background_color = 66CCFF
 spot_input_gui_number = 45
@@ -45,6 +45,7 @@ show_spotlight:
 	spot_completion_gui_x := spot_input_gui_x
 	spot_completion_gui_y := spot_input_gui_y + spot_input_gui_height + 5
 
+#Space::
 ^Space::
 gosub show_spotlight
 Return 
